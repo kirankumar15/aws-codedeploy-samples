@@ -20,7 +20,13 @@ Here the webserver would be configured on the local host and the dbserver on a
 server called "bensible". The stack can be deployed using the following
 command:
 
+        export LAMP_DB_PASSWORD='<choose a password>'
         ansible-playbook -i hosts site.yml
+
+The application DB password is not stored in this repository. Supply it through
+the LAMP_DB_PASSWORD environment variable, or with `-e db_password=...` or an
+Ansible Vault file; the playbook fails if none is set. The application user
+(`appuser`) gets access to the `foodb` database only, from the web servers.
 
 Once done, you can check the results by browsing to http://localhost/index.php.
 You should see a simple test page and a list of databases retrieved from the

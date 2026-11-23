@@ -23,5 +23,18 @@
 - name: Create Application Database
   mysql_db: name={{ dbname }} state=present
 
+- name: Require an application DB password
+  fail: msg="db_password is empty. Set LAMP_DB_PASSWORD or pass db_password with -e or Ansible Vault."
+  when: db_password == ''
+
+# Least privilege: access to the application database only, and only from the
+# web servers' addresses (the same addresses index.php connects from).
 - name: Create Application DB User
-  mysql_user: name={{ dbuser }} password={{ upassword }} priv=*.*:ALL host='%' state=present
+  mysql_user:
+    name: "{{ dbuser }}"
+    password: "{{ db_password }}"
+    priv: "{{ dbname }}.*:ALL"
+    host: "{{ hostvars[item].ansible_eth0.ipv4.address }}"
+    state: present
+  with_items: "{{ groups['webservers'] }}"
+  no_log: true

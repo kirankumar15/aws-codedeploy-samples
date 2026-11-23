@@ -11,8 +11,9 @@
  echo exec('hostname');
  Print  "</BR>";
  echo  "List of Databases: </BR>";
+ $dbconf = parse_ini_file('/etc/lamp_simple/db.ini', true) or die('Cannot read DB config');
  {% for host in groups['dbservers'] %}
-    $link = mysql_connect('{{ hostvars[host].ansible_eth0.ipv4.address }}', '{{ hostvars[host].dbuser }}', '{{ hostvars[host].upassword }}') or die(mysql_error());
+    $link = mysql_connect('{{ hostvars[host].ansible_eth0.ipv4.address }}', $dbconf['{{ hostvars[host].ansible_eth0.ipv4.address }}']['user'], $dbconf['{{ hostvars[host].ansible_eth0.ipv4.address }}']['password']) or die(mysql_error());
  {% endfor %}
     $res = mysql_query("SHOW DATABASES");
     while ($row = mysql_fetch_assoc($res)) {

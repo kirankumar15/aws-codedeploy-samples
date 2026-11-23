@@ -1,0 +1,6 @@
+; Managed by Ansible. DB credentials for index.php, one section per DB server.
+{% for host in groups['dbservers'] %}
+[{{ hostvars[host].ansible_eth0.ipv4.address }}]
+user = "{{ hostvars[host].dbuser }}"
+password = "{{ hostvars[host].db_password }}"
+{% endfor %}
