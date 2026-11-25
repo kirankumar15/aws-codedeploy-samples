@@ -4,6 +4,13 @@
 
 mysqlservice: mysqld
 mysql_port: 3306
-dbuser: root
+dbuser: appuser
 dbname: foodb
-upassword: abc
+
+# The application DB password is never stored in this repository. Supply it at
+# run time, either through the environment of the ansible-playbook process:
+#   export LAMP_DB_PASSWORD='<password>'
+# or as an extra var / Ansible Vault file (extra vars override this value):
+#   ansible-playbook -i hosts site.yml -e @db_secrets.vault.yml --ask-vault-pass
+# The password must not contain a double quote (").
+db_password: "{{ lookup('env', 'LAMP_DB_PASSWORD') }}"

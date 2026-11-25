@@ -5,5 +5,14 @@
 - name: Copy the code from repository
   git: repo={{ repository }} dest=/var/www/html/ansible
 
+# DB credentials live outside the web root, readable only by root and Apache,
+# so they are never written into the PHP source.
+- name: Create the application config directory
+  file: path=/etc/lamp_simple state=directory owner=root group=apache mode=0750
+
+- name: Write the DB credentials file
+  template: src=db.ini.j2 dest=/etc/lamp_simple/db.ini owner=root group=apache mode=0640
+  no_log: true
+
 - name: Creates the index.php file 
   template: src=index.php.j2 dest=/var/www/html/ansible/index.php
